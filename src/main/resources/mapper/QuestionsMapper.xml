@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.question.mapper.QuestionsMapper">
+
+    <resultMap id="BaseResultMap" type="com.question.domain.Questions">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="createdBy" column="created_by" jdbcType="BIGINT"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="questionsTitle" column="questions_title" jdbcType="VARCHAR"/>
+            <result property="questionsContent" column="questions_content" jdbcType="VARCHAR"/>
+            <result property="difficulty" column="difficulty" jdbcType="VARCHAR"/>
+            <result property="browseCount" column="browse_count" jdbcType="INTEGER"/>
+            <result property="commentCount" column="comment_count" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,created_by,created_time,
+        questions_title,questions_content,difficulty,
+        browse_count,comment_count
+    </sql>
+    <select id="questionPage" resultType="com.question.pojo.result.QuestionPageResult">
+        select
+            q.id as id,
+            q.created_by as createdby,
+            q.created_time as createdTime,
+            q.questions_title as questionsTitle,
+            q.questions_content AS questionsContent,
+            q.difficulty AS difficulty,
+            q.browse_count AS browseCount,
+            q.comment_count AS commentCount,
+            u.user_name AS createdByName
+            from questions q join user u on q.created_by = u.id
+        <where>
+            <if test="questionTitle != null and questionTitle != ''">
+                q.questions_title like concat('%',#{questionTitle},'%')
+            </if>
+        </where>
+        order by q.created_time desc
+    </select>
+    <select id="hotQuestions" resultType="com.question.domain.Questions">
+        select * from questions order by browse_count desc limit 10
+    </select>
+</mapper>

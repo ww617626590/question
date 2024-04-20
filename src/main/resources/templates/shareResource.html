@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>分享资源</title>
+  <link rel="stylesheet" href="../../static/bootstrap3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../static/bootstrap3/css/bootstrap-theme.min.css">
+  <script src="../../static/bootstrap3/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="../static/bootstrap3/css/question.css">
+  <script src="../../static/bootstrap3/js/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<div th:insert="~{navigation::nav}"></div>
+<!--    发布内容-->
+<div class="container-fluid main">
+  <div class="row">
+    <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12" >
+      <h2><span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span>发起</h2>
+      <hr>
+      <form action="/document/upload" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="title">资源详情</label>
+          <textarea class="form-control" rows="5" th:value="${documentDescribe}"id="title" name="documentDescribe" placeholder="请输入资源的详细介绍"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="inputFile">上传资源</label>
+          <input type="file" id="inputFile" name="file">
+        </div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        <button type="submit" class="btn btn-success btn-publish">分享资源</button>
+        <button onclick="cancelShare()" type="button" class="btn btn-danger btn-publish">取消分享</button>
+      </form>
+    </div>
+    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12" >
+      <h3>资源分享指南</h3>
+      资源详情:请用精简的语言描述您要分享资源详情。<br>
+      上传资源:点击上传资源按钮选择您要上传的资源文件。<br>
+    </div>
+  </div>
+</div>
+<div th:insert="~{footer::foot}"></div>
+<script>
+  // 点击取消按钮跳转到首页
+  function cancelShare() {
+    window.location.href = "/";
+  }
+</script>
+</body>
+</html>

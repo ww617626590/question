@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.question.mapper.DocumentMapper">
+
+    <resultMap id="BaseResultMap" type="com.question.domain.Document">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="createdBy" column="created_by" jdbcType="BIGINT"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="documentName" column="document_name" jdbcType="VARCHAR"/>
+            <result property="documentDescribe" column="document_describe" jdbcType="VARCHAR"/>
+            <result property="documentLocation" column="document_location" jdbcType="VARCHAR"/>
+            <result property="downloadCount" column="download_count" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,created_by,created_time,
+        document_name,document_describe,document_location,download_count
+    </sql>
+    <select id="documentPage" resultType="com.question.pojo.result.DocumentPageResult">
+        select
+        d.id as id,
+        d.created_by as createdBy,
+        d.created_time as createdtime,
+        d.document_name as documentname,
+        d.document_describe as documentDescribe,
+        d.document_location as documentLocation,
+        d.download_count as downloadCount,
+        u.user_name as createdByName
+        from document d
+        left join user u on d.created_by = u.id
+        <where>
+            <if test="queryContent != null and queryContent != ''">
+                and d.document_name like concat('%',#{queryContent},'%')
+            </if>
+        </where>
+        order by d.created_time desc
+    </select>
+    <select id="hotDocument" resultType="com.question.domain.Document">
+        select
+        <include refid="Base_Column_List"/>
+        from document
+        order by download_count desc
+    </select>
+</mapper>

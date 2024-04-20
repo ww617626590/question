@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>问题详情页</title>
+    <link rel="stylesheet" href="../static/bootstrap3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/bootstrap3/css/bootstrap-theme.min.css">
+    <script src="../static/bootstrap3/js/bootstrap.min.js"></script>
+    <script src="../static/bootstrap3/js/jquery-3.5.1.min.js"></script>
+    <link rel="stylesheet" href="../static/bootstrap3/css/question.css">
+</head>
+<body>
+<!-- 导航栏 -->
+<div th:insert="~{navigation::nav}"></div>
+<div class="container-fluid main">
+    <div class="row">
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+<!--            问题详情-->
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h4><span th:text="${questionResult.questionsTitle}"></span></h4>
+                <div class="question-desc">
+                    作者：<span th:text="${questionResult.createdByName}"> </span>&nbsp;&nbsp;
+                    发布时间: <span
+                        th:text="${#dates.format(questionResult.createdTime, 'yyyy-MM-dd HH:mm:ss')}"></span>&nbsp;&nbsp;
+                    问题难度: <span th:text="${questionResult.difficulty}"></span>&nbsp;&nbsp;
+                    阅读数: <span th:text="${questionResult.browseCount}"></span>&nbsp;&nbsp;
+                    评论数: <span th:text="${questionResult.commentCount}"></span>&nbsp;&nbsp;
+                </div>
+                <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top: 5px; margin-bottom: 5px">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:text="${questionResult.questionsContent}"></div>
+            </div>
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 " style="margin-top: 5px; margin-bottom: 5px">
+<!--            评论列表-->
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                <h4>
+                    <span class="glyphicon glyphicon-th-list"></span>
+                    <span th:text="${questionResult.commentCount}"></span>
+                    条评论
+                </h4>
+                <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 " style="margin-top: 5px; margin-bottom: 5px">
+<!--                评论列表-->
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 " th:each="comment : ${commentList}" style="border-bottom: 2px solid #efefef; ">
+                    <input type="hidden" th:value="${comment.id}" id="commentId">
+                    <span class="glyphicon glyphicon-user" style="margin-top: 7px"></span>
+                    <span aria-hidden="true" th:text="${comment.createdByName}"></span><br>
+                    <span style="margin-left: 15px" th:text="${comment.commentContent}"></span>
+                    <div class="menu" th:id="'menu_'+${comment.id}">
+                        <span th:id="'menu_icon_'+${comment.id}" onclick="unfoldComment(this)" th:data-id="${comment.id}" class="glyphicon glyphicon-comment pull-right icon" style="margin-left: 15px; font-size: 14px" th:text="${comment.secondCommentCount}"></span>
+                        <span class="pull-right" th:text="${#dates.format(comment.createdTime, 'yyyy-MM-dd')}"></span>&nbsp;&nbsp;
+                    </div>
+<!--                    二级评论 collapse in 显示 去掉in不显示-->
+                    <div th:id="'comment_'+${comment.id}" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 rounded-table collapse " style="margin-top: 10px; border: 1px solid #efefef; margin-bottom: 10px" >
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 " th:each="secondComment : ${comment.secondCommentList}" style="border-bottom: 2px solid #efefef;">
+                            <input type="hidden" th:value="${comment.id}" th:id="'parentId_'+${comment.id}">
+                            <span class="glyphicon glyphicon-user" style="margin-top: 7px"></span>
+                            <span aria-hidden="true" th:text="${secondComment.createdByName}"></span><br>
+                            <span style="margin-left: 15px" th:text="${secondComment.commentContent}"></span>
+                            <div class="menu">
+                                <span class="pull-right" th:text="${#dates.format(secondComment.createdTime, 'yyyy-MM-dd')}"></span>&nbsp;&nbsp;
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <input th:id="'secondCommentContent_' + ${comment.id}" type="text" class="form-control" placeholder="评论一下......" style="margin-top: 5px; margin-bottom: 5px;">
+                            <button type="button" class="btn btn-success btn-publish" style="margin-top: 10px;" th:onclick="secondComment('[[${comment.id}]]')" >评论</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<!--            评论框-->
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="comment_section" >
+                <h4><span class="glyphicon glyphicon-pencil" style="font-size: 16px"></span> 评论</h4>
+                <input type="hidden" th:value="${questionResult.id}" id="questionId">
+                <textarea id="commentContent" class="form-control" rows="4" style="margin-top: 10px; margin-bottom: 10px;" ></textarea>
+                <button type="button" class="btn btn-success btn-publish" onclick="community()">评论</button>
+            </div>
+        </div>
+<!--        右侧边栏-->
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 question-frame rounded-table" style="margin-top: 60px;">
+                <h4><span class="glyphicon glyphicon-sunglasses" aria-hidden="true"></span> 问题发起人</h4>
+                <hr style="margin-bottom: 5px; margin-top: 10px">
+                <span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-right: 3px; font-size: 12px;"></span>
+                <span th:text="${questionResult.createdByName}"> </span>&nbsp;&nbsp;
+                <h4><span class="glyphicon glyphicon-console" aria-hidden="true" style="margin-top: 15px"></span> 互动人员</h4>
+                <hr style="margin-bottom: 5px; margin-top: 10px">
+                <div th:each="comment : ${allComments}">
+                    <span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-right: 3px; font-size: 12px;"></span>
+                    <span th:text="${comment.createdByName}"> </span>&nbsp;&nbsp;
+                </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 question-frame rounded-table" style="margin-top: 20px; margin-bottom: 15px;">
+                <h4> <span class="glyphicon glyphicon-send" aria-hidden="true"></span> 意见反馈</h4>
+                <hr style="margin-bottom: 5px; margin-top: 10px">
+                <span>请输入您的宝贵意见:</span>
+                <textarea id="feedback" class="form-control" rows="5" style="margin-top: 10px; margin-bottom: 10px;"></textarea>
+                <button type="button" class="btn btn-success" style="width: 100%;" onclick="feedbackControl()">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:insert="~{footer::foot}"></div>
+<script>
+    //评论
+    function community() {
+        // 获取问题id
+        var questionId = $("#questionId").val();
+        // 获取评论内容
+        var commentContent = $("#commentContent").val();
+        // 校验评论内容不能为空
+        if (commentContent == null || commentContent === "") {
+            alert("评论内容不能为空");
+            return;
+        }
+        var dataObj = {
+            "questionId": questionId,
+            "commentContent": commentContent
+        };
+        // 将 JavaScript 对象转换为 JSON 字符串
+        var jsonData = JSON.stringify(dataObj);
+        // 发送ajax请求
+        $.ajax({
+            url: "/comment/add",
+            type: "POST",
+            dateType: "json",
+            contentType: "application/json; charset=utf-8",
+            data: jsonData,
+            success: function (data) {
+                if (data.code === 200) {
+                    window.location.reload();
+                } else {
+                    if (data.code === 505) {
+                        var isAccepted= confirm(data.message);
+                        if (isAccepted) {
+                            window.location.href = "/login";
+                        }
+                    }
+                }
+            }
+        });
+    }
+    // 展开二级评论
+    function unfoldComment(e) {
+        var id = e.getAttribute("data-id");
+        // document.getElementById("comment_" + id).classList.toggle("collapse");
+        if (document.getElementById("comment_" + id).classList.contains("collapse")) {
+
+            // 获取二级评论数
+            // 展开二级评论
+            document.getElementById("comment_" + id).classList.remove("collapse");
+            e.classList.add("active");
+        } else {
+            document.getElementById("comment_" + id).classList.add("collapse");
+            e.classList.remove("active");
+        }
+    }
+
+    // 提交二级评论
+    function secondComment(commentId) {
+        // 获取问题id
+        var questionId = $("#questionId").val();
+        // 获取评论内容
+        var commentContent = document.getElementById("secondCommentContent_" + commentId).value;
+        // 校验评论内容不能为空
+        if (commentContent == null || commentContent === "") {
+            alert("评论内容不能为空");
+            return;
+        }
+        var dataObj = {
+            "parentId": commentId,
+            "questionId": questionId,
+            "commentContent": commentContent
+        };
+        // 将 JavaScript 对象转换为 JSON 字符串
+        var jsonData = JSON.stringify(dataObj);
+        // 发送ajax请求
+        $.ajax({
+            url: "/comment/add",
+            type: "POST",
+            dateType: "json",
+            contentType: "application/json; charset=utf-8",
+            data: jsonData,
+            success: function (data) {
+                if (data.code === 200) {
+                    localStorage.setItem('commentId', commentId);
+                    window.location.reload();
+                } else {
+                    if (data.code === 505) {
+                        var isAccepted= confirm(data.message);
+                        if (isAccepted) {
+                            window.location.href = "/login";
+                        }
+                    }
+                }
+            }
+        });
+
+
+    }
+
+    // 页面加载
+    window.onload = function () {
+        var commentId = localStorage.getItem('commentId');
+        if (commentId != null && commentId !== "") {
+            document.getElementById("comment_" + commentId).classList.remove("collapse");
+            document.getElementById("menu_icon_"+ commentId).classList.add("active");
+            localStorage.removeItem('commentId');
+        }
+    };
+
+    function feedbackControl() {
+        var feedback = document.getElementById("feedback").value;
+        if (feedback === "") {
+            alert("请输入您的宝贵意见");
+        }
+        var dataObj = {
+            "feedbackContent": feedback
+        };
+        // 将 JavaScript 对象转换为 JSON 字符串
+        var jsonData = JSON.stringify(dataObj);
+        // 发送ajax请求
+        $.ajax({
+            url: "/feedback/add",
+            type: "POST",
+            dateType: "json",
+            contentType: "application/json; charset=utf-8",
+            data: jsonData,
+            success: function (data) {
+                if (data.code === 200) {
+                    alert("反馈成功");
+                    window.location.reload();
+                } else {
+                    if (data.code === 505) {
+                        var isAccepted= confirm(data.message);
+                        if (isAccepted) {
+                            window.location.href = "/login";
+                        }
+                    }
+                }
+            }
+        })
+
+    }
+
+</script>
+</body>
+</html>

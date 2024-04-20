@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>发布题目</title>
+    <link rel="stylesheet" href="../../static/bootstrap3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../static/bootstrap3/css/bootstrap-theme.min.css">
+    <script src="../../static/bootstrap3/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../static/bootstrap3/css/question.css">
+    <script src="../../static/bootstrap3/js/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<div th:insert="~{navigation::nav}"></div>
+<!--    发布内容-->
+<div class="container-fluid main">
+    <div class="row">
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12" >
+            <h2><span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span>发起</h2>
+            <hr>
+            <form action="/questions/add" method="post">
+                <div class="form-group">
+                    <label for="title">问题标题</label>
+                    <input type="text" class="form-control" th:value="${questionsTitle}" id="title" name="questionsTitle" placeholder="问题标题。。。。。">
+                </div>
+                <div class="form-group">
+                    <label for="description">问题详情</label>
+                    <textarea class="form-control" rows="10" th:value="${questionsContent}"id="description" name="questionsContent" placeholder=""></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="difficulty">问题难度</label>
+                    <select class="form-control" name="difficulty" id="difficulty">
+                        <option value="简单">简单</option>
+                        <option value="容易">容易</option>
+                        <option value="困难">困难</option>
+                    </select>
+                </div>
+                <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                <button type="submit" class="btn btn-success btn-publish">发布问题</button>
+                <button onclick="cancelIssue()" type="button" class="btn btn-danger btn-publish">取消发布</button>
+            </form>
+        </div>
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12" >
+            <h3>问题发起指南</h3>
+            <ul>
+                <li>问题标题:请用精简的语言描述您发布的问题，不超过25字。</li>
+                <li>问题补充:详细补充您的问题内容，并确保问题描述清晰直观，并提供一些相关的资料。</li>
+                <li>问题难度:在简单、容易、困难三个选项中选择一个，方便其他人了解您发布的问题的难度。</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div th:insert="~{footer::foot}"></div>
+<script>
+    // 点击取消按钮跳转到首页
+    function cancelIssue() {
+        window.location.href = "/";
+    }
+</script>
+</body>
+</html>

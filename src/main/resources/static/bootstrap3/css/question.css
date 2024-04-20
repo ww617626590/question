@@ -1,0 +1,71 @@
+body{
+    background-color: #efefef;
+}
+
+.main {
+    background-color: white;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-right: 40px;
+    margin-left: 40px;
+    border-radius: 10px; /* 设置圆角半径 */
+    overflow: hidden; /* 隐藏溢出表格的内容，以确保圆角效果 */
+}
+.btn-publish{
+    float: right;
+    margin-bottom: 15px;
+    margin-right: 10px; /* 或者你想要的任何值 */
+}
+.btn-publish:last-child {
+    margin-left: 0;
+}
+
+.rounded-table {
+    border-radius: 10px; /* 设置圆角半径 */
+    overflow: hidden; /* 隐藏溢出表格的内容，以确保圆角效果 */
+}
+.media-object {
+    width: 38px;
+    height: 38px;
+}
+/* 创建人 浏览数的样式 */
+.question-desc{
+    margin-top: 1px;
+    font-size: 15px;
+    font-weight: normal;
+    color: #999;
+}
+/*为父元素设置下内边距 */
+.question-frame {
+    padding-bottom: 10px; /*为父元素设置下内边距 */
+    border-top: 2px solid #efefef; /* 设置顶部边框为1像素宽，实线，黑色 */
+    border-bottom: 2px solid #efefef; /* 其他三条边边框为0，即不显示 */
+    border-left: 2px solid #efefef;;
+    border-right: 2px solid #efefef;;
+}
+/*字符显示
+-webkit-line-clamp 为显示行数
+*/
+.question-content{
+    width:100%;
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+    overflow:hidden;
+    margin-bottom: -10px;
+}
+
+.menu{
+    color: #999;
+}
+.menu .icon{
+    margin-right: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.menu .active{
+    color: #499ef3;
+}
+.menu .icon:hover{
+    color: #499ef3;
+}

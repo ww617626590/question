@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>导航栏</title>
+</head>
+<body>
+<!-- 导航栏 -->
+<div th:fragment="nav">
+  <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">提问社区</span>
+        </button>
+        <a id="homeBtn" class="navbar-brand" href="/">提问社区</a>
+      </div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav ">
+          <li id="questionLi" ><a href="/"> <span class="glyphicon glyphicon-home" aria-hidden="true"></span> 问题专栏</a></li>
+          <li><a href="/document/page"><span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span> 资源专栏</a></li>
+          <li ><a href="/userActions/page"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> 数据统计</a></li>
+        </ul>
+        <form class="navbar-form navbar-left">
+          <div class="form-group">
+            <input id="searchContent" type="text" class="form-control" placeholder="搜索问题">
+          </div>
+          <button type="button" class="btn btn-default" onclick="searchQuestions()">搜索</button>
+        </form>
+        <ul class="nav navbar-nav navbar-right">
+          <li th:if="${session.user!=null}"><a href="/saveQuestion"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> 发布问题</a></li>
+          <li th:if="${session.user!=null}"><a href="/shareResource"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> 分享资源</a></li>
+          <li th:if="${session.user!=null}"><a href="#" ><span class="glyphicon glyphicon-user" aria-hidden="true" th:text="${session.user.userName}"></span></a></li>
+<!--          <li class="dropdown" th:if="${session.user!=null}">-->
+<!--            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="${session.user.userName}"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a>-->
+<!--            <ul class="dropdown-menu">-->
+<!--              <li><a href="#">消息</a></li>-->
+<!--              <li><a href="#">个人资料</a></li>-->
+<!--              <li><a href="#">嘎嘎嘎</a></li>-->
+<!--            </ul>-->
+<!--          </li>-->
+          <li th:if="${session.user==null}"><a href="/login"><span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> 登录</a></li>
+          <li th:if="${session.user==null}"><a href="/register"><span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> 注册</a></li>
+          <li th:if="${session.user!=null}"><a href="/logout"><span class="glyphicon glyphicon-off" aria-hidden="true"></span> 退出登录</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</div>
+</body>
+<script>
+  $("#homeBtn").click(function () {
+    $("#questionLi").addClass("active");
+  });
+
+</script>
+
+</html>

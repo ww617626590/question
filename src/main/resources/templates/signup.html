@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>注册</title>
+    <meta name="keywords" content="HTML5 Template">
+    <meta name="description" content="Forum - Responsive HTML5 Template">
+    <meta name="author" content="Forum">
+    <link rel="shortcut icon" href="favicon/favicon.ico">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="../static/webjars/bootstrap/css/style.css">
+</head>
+<body style="background-image: url('static/images/login.jpg'); background-size: cover; background-repeat: no-repeat;">
+<nav class="panel-menu" id="mobile-menu">
+    <ul></ul>
+    <div class="mm-navbtn-names">
+        <div class="mm-closebtn">Close
+            <div class="tt-icon">
+                <svg>
+                    <use xlink:href="#icon-cancel"></use>
+                </svg>
+            </div>
+        </div>
+        <div class="mm-backbtn">Back</div>
+    </div>
+</nav>
+<main id="tt-pageContent" class="tt-offset-none">
+    <div class="container">
+        <div class="tt-loginpages-wrapper" >
+            <div class="tt-loginpages" style="opacity: 0.7;">
+                <form class="form-default">
+                    <div class="form-group">
+                        <label for="loginUserName">用户名</label>
+                        <input type="text" name="name" class="form-control" id="loginUserName" placeholder="请输入用户名">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginUserEmail">邮箱</label>
+                        <input type="text" name="name" class="form-control" id="loginUserEmail" placeholder="请输入邮箱">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginUserPassword">密码</label>
+                        <input type="password" name="name" class="form-control" id="loginUserPassword" placeholder="请输入密码">
+                    </div>
+                    <div class="form-group"><a class="btn btn-secondary btn-block" onclick="register()">创建账号</a></div>
+                    <p>如果你有账号? <a href="/login" class="tt-underline">请点击这里登录</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="../static/webjars/bootstrap/js/bundle.js"></script>
+<script>
+    function register() {
+        var name = $("#loginUserName").val();
+        var email = $("#loginUserEmail").val();
+        var password = $("#loginUserPassword").val();
+        // 单独为用户名，密码、邮箱为空校验
+        if (name === "" || password === "" || email === "") {
+            alert("用户名、密码、邮箱不能为空");
+            return;
+        }
+        // 邮箱格式校验
+        if (!email.match(/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/)) {
+            alert("邮箱格式不正确");
+        }
+        var dataObj = {
+            "userName": name,
+            "userEmail": email,
+            "password": password
+        };
+        // 将 JavaScript 对象转换为 JSON 字符串
+        var jsonData = JSON.stringify(dataObj);
+
+        $.ajax({
+            url: "/user/register",
+            type: "POST",
+            contentType: "application/json; charset=utf-8", // 设置请求内容的类型
+            dataType: "json", // 期望服务器返回的数据类型
+            data: jsonData, // 发送 JSON 字符串
+            success: function (data) {
+                if (data.code === 200) {
+                    alert("注册成功,跳转到首页");
+                    // 注册成功跳转到index.html页面
+                    window.location.href = "/";
+                } else {
+                    alert(data.msg);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                // 你可以在这里处理错误情况
+                alert("请求失败: " + textStatus);
+            }
+        });
+    }
+</script>
+</body>
+</html>

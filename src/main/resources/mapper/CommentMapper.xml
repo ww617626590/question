@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.question.mapper.CommentMapper">
+
+    <resultMap id="BaseResultMap" type="com.question.domain.Comment">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="createdBy" column="created_by" jdbcType="BIGINT"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="questionId" column="question_id" jdbcType="BIGINT"/>
+            <result property="commentContent" column="comment_content" jdbcType="VARCHAR"/>
+            <result property="parentId" column="parent_id" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,created_by,created_time,
+        question_id,comment_content,parent_id
+    </sql>
+    <select id="selectCommentList" resultType="com.question.pojo.result.CommentListResult">
+        select
+        c.id as id,
+        c.created_by as createdBy,
+        c.created_time as createdTime,
+        c.comment_content as commentContent,
+        c.parent_id as parentId,
+        u.user_name as createdByName
+        from comment c
+        left join user u on c.created_by = u.id
+        where c.question_id = #{questionId} and c.parent_id is null
+        order by c.created_time desc
+    </select>
+    <select id="selectSecondList" resultType="com.question.pojo.result.CommentListResult">
+        select
+            c.id as id,
+            c.created_by as createdBy,
+            c.created_time as createdTime,
+            c.comment_content as commentContent,
+            c.parent_id as parentId,
+            u.user_name as createdByName
+        from comment c
+                 left join user u on c.created_by = u.id
+        where c.parent_id = #{commentId}
+        order by c.created_time desc
+    </select>
+    <select id="selectAllList" resultType="com.question.pojo.result.CommentListResult">
+        select
+            c.id as id,
+            c.created_by as createdBy,
+            c.created_time as createdTime,
+            c.comment_content as commentContent,
+            c.parent_id as parentId,
+            u.user_name as createdByName
+        from comment c
+                 left join user u on c.created_by = u.id
+        where c.question_id = #{questionId}
+        group by c.created_by
+    </select>
+</mapper>
